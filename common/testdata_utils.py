@@ -7,9 +7,13 @@
 
 import os
 from common.excel_utils import ExcelUtils
+from common import config  # 引用方法一读取配置文件
+from common.localconfig_utlis import local_config # 引用方法二读取配置文件
 
 current_path = os.path.dirname(__file__)
-test_data_path = os.path.join(current_path, '..', 'test_data/test_case.xlsx')
+# test_data_path = os.path.join(current_path, '..', config.CASE_DATA_PATH) # 方法一读取配置文件
+test_data_path = os.path.join(current_path, '..', local_config.CASE_DATA_PATH)
+
 
 
 class TestdataUtils():
