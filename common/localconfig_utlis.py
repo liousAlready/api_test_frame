@@ -30,6 +30,16 @@ class LocalconfigUtils():
         case_data_path_value = self.cfg.get('path', 'CASE_DATA_PATH')
         return case_data_path_value
 
+    @property
+    def LOG_PATH(self):
+        log_path_value = self.cfg.get('path', 'LOG_PATH')
+        return log_path_value
+
+    @property
+    def LOG_LEVEL(self):
+        log_level_value = self.cfg.get('log', 'LOG_LEVEL')
+        return int(log_level_value)
+
 
 local_config = LocalconfigUtils()
 
