@@ -18,14 +18,13 @@ class RequestDemo111():
         }
         self.session = requests.session()
 
-    def get(self, get_info):
+    def __get(self, get_info):
         url = self.hosts + get_info['请求地址']
         # print(url)
         response = self.session.get(url=url,
                                     params=ast.literal_eval(get_info['请求参数(get)']),
                                     )
         response.encoding = response.apparent_encoding  # 查看响应结果类型
-        print(response.text)
         result = {
             "code": 0,  # 请求是否成功的标志位
             "response_reason": response.reason,
@@ -35,7 +34,7 @@ class RequestDemo111():
         }
         return result
 
-    def post(self, post_info):
+    def __post(self, post_info):
         url = self.hosts + post_info['请求地址']
         print(post_info['提交数据（post）'])
         response = self.session.post(url=url,
@@ -46,7 +45,6 @@ class RequestDemo111():
                                      headers=self.headers
                                      )
         response.encoding = response.apparent_encoding  # 查看响应结果类型
-        # print(response.text)
         result = {
             "code": 0,  # 请求是否成功的标志位
             "response_reason": response.reason,
@@ -54,6 +52,23 @@ class RequestDemo111():
             "response_header": response.headers,
             "response_json": response.json()
         }
+        return result
+
+    def request(self, set_info):
+        request_type = set_info['请求方式']
+        if request_type == "get":
+            result = self.__get(set_info)
+        elif request_type == "post":
+            result = self.__post(set_info)
+        else:
+            result = {"code": 3, "result": "请求参数不支持"}
+        return result
+
+    def request_by_step(self, step_info):
+        for step in step_info:
+            result = self.request(step)
+            if result['code'] != 0:
+                break
         return result
 
 
@@ -72,4 +87,22 @@ if __name__ == '__main__':
                  '期望结果类型': 'json键值对', '期望结果': '{"errcode":45157}', '测试结果': ''}
 
     # RequestDemo111().get(get_info)
-    RequestDemo111().post(post_info)
+    # RequestDemo111().post(post_info)
+
+    # print(RequestDemo111().request(get_info))
+
+    case_info = [
+        {'测试用例编号': 'case02', '测试用例名称': '测试能否正确新增用户标签', '用例执行': '否', '测试用例步骤': 'step_01', '接口名称': '获取access_token接口',
+         '请求方式': 'get', '请求地址': '/cgi-bin/token',
+         '请求参数(get)': '{"grant_type": "client_credential","appid": "wxb637f897f0bf1f0d","secret": "501123d2d367b109a5cb9a9011d0f084"}',
+         '提交数据（post）': '', '取值方式': 'json取值', '传值变量': 'token', '取值代码': '$.access_token', '期望结果类型': '正则匹配',
+         '期望结果': '{"access_token":"(.+?)","expires_in":(.+?)}', '测试结果': ''},
+        {'测试用例编号': 'case02', '测试用例名称': '测试能否正确新增用户标签', '用例执行': '否', '测试用例步骤': 'step_02', '接口名称': '创建标签接口',
+         '请求方式': 'post', '请求地址': '/cgi-bin/tags/create', '请求参数(get)': '{"access_token":${token}}',
+         '提交数据（post）': '{"tag" : {"name" : "衡东8888"}}', '取值方式': '无', '传值变量': '', '取值代码': '', '期望结果类型': 'json键值对',
+         '期望结果': '{"errcode":45157}', '测试结果': ''}]
+    requestsUtils = RequestDemo111()
+    # for c in case_info:
+    #     requestsUtils.request(c)
+
+    requestsUtils.request_by_step(case_info)

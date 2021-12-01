@@ -41,6 +41,6 @@ class TestdataUtils():
 
 if __name__ == "__main__":
     test = TestdataUtils()
-
-    for i in test.get_testcase_list():
-        print(i)
+    print(test.get_testcase_list())
+    # for i in test.get_testcase_list():
+    #     print(i)
